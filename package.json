@@ -1,6 +1,6 @@
 {
     "name": "@yelishgiri1/xeno",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A reusable RentForm component for React Native projects.",
     "main": "src/Xeno.js",
     "scripts": {
