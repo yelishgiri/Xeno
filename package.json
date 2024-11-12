@@ -1,0 +1,29 @@
+{
+    "name": "@yelishgiri/xeno",
+    "version": "1.0.0",
+    "description": "A reusable RentForm component for React Native projects.",
+    "main": "src/Xeno.js",
+    "scripts": {
+      "start": "react-native start"
+    },
+    "files": [
+      "src",
+      "README.md"
+    ],
+    "dependencies": {
+      "@react-native-picker/picker": "^2.9.0",
+      "axios": "^1.7.7",
+      "expo-document-picker": "^12.0.2",
+      "expo-file-system": "^17.0.1",
+      "react": "18.2.0",
+      "react-native": "0.74.5"
+    },
+    "peerDependencies": {
+      "react": ">=16.8.0",
+      "react-native": ">=0.60.0"
+    },
+    "keywords": ["react-native", "rent-form", "xeno", "react-native-component"],
+    "author": "Yelish Giri",
+    "license": "MIT"
+  }
+  
