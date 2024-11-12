@@ -34,7 +34,7 @@ const Xeno = ({ visible, onClose }) => {
       "Pet Supplies",
       "Fitness",
       "Health & Wellness"
-    ];;
+    ];
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
