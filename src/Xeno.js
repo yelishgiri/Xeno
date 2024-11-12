@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Modal, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TextInput, Modal, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Image, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker'; 
-
+import { category } from '@/constants/products';
 
 const Xeno = ({ visible, onClose }) => {
   const [formData, setFormData] = useState({
@@ -19,22 +19,7 @@ const Xeno = ({ visible, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
 
-  const categories = [
-      "Outdoor Recreation",
-      "Home Appliances",
-      "Electronics",
-      "Home & Garden",
-      "Tools",
-      "Travel",
-      "Kitchen Appliances",
-      "Garden",
-      "Winter Equipment",
-      "Party Supplies",
-      "Transportation",
-      "Pet Supplies",
-      "Fitness",
-      "Health & Wellness"
-    ];
+  const categories = category;
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -46,7 +31,6 @@ const Xeno = ({ visible, onClose }) => {
       if (!res.canceled && res.assets && res.assets.length > 0) {
         const uri = res.assets[0].uri;
         setSelectedFileUri(uri);
-
         const base64 = await FileSystem.readAsStringAsync(uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
@@ -99,45 +83,185 @@ const Xeno = ({ visible, onClose }) => {
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <ScrollView contentContainerStyle={{ flex: 1, padding: 16, backgroundColor: '#f5f5f5' }}>
-        <View className="p-6 rounded-lg bg-white shadow-lg">
-          <Text className="text-2xl font-bold text-center mb-6">Add New Item</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.modalContent}>
+          <Text style={styles.title}>Add New Item</Text>
 
           {!isAnalyzed ? (
             <>
-              <TouchableOpacity onPress={pickFile} className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
+              <TouchableOpacity onPress={pickFile} style={styles.imagePlaceholder}>
                 {selectedFileUri ? (
-                  <Image source={{ uri: selectedFileUri }} style={{ width: '100%', height: '100%', borderRadius: 10 }} resizeMode="cover" />
+                  <Image source={{ uri: selectedFileUri }} style={styles.image} resizeMode="cover" />
                 ) : (
-                  <Text className="text-gray-500 text-base">Select an Image</Text>
+                  <Text style={styles.imageText}>Select an Image</Text>
                 )}
               </TouchableOpacity>
-              <TouchableOpacity className="w-full bg-blue-500 py-3 rounded-md" onPress={moderateImage}>
-                <Text className="text-white text-center font-semibold text-lg">Upload Image</Text>
+              <TouchableOpacity style={styles.uploadButton} onPress={moderateImage}>
+                <Text style={styles.uploadButtonText}>Upload Image</Text>
               </TouchableOpacity>
             </>
           ) : (
             <>
-              <View className="mb-4">
-                <Text className="text-sm font-semibold text-gray-700 mb-1">Item Name</Text>
+              <View style={styles.formField}>
+                <Text style={styles.label}>Item Name</Text>
                 <TextInput
-                  className="h-10 px-3 border border-gray-300 rounded-md bg-white"
+                  style={styles.input}
                   placeholder="Enter item name"
                   value={formData.item_name}
                   onChangeText={(text) => handleInputChange('item_name', text)}
                 />
               </View>
-              <TouchableOpacity className="w-full bg-green-500 py-3 rounded-md mt-4" onPress={handleSubmit}>
-                <Text className="text-white text-center font-semibold text-lg">Submit Item</Text>
+
+              <View style={styles.formField}>
+                <Text style={styles.label}>Condition</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter condition"
+                  value={formData.condition}
+                  onChangeText={(text) => handleInputChange('condition', text)}
+                />
+              </View>
+
+              <View style={styles.formField}>
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                  style={[styles.input, styles.descriptionInput]}
+                  placeholder="Describe the item"
+                  value={formData.description}
+                  onChangeText={(text) => handleInputChange('description', text)}
+                  multiline
+                />
+              </View>
+
+              <View style={styles.formField}>
+                <Text style={styles.label}>Price</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter price"
+                  keyboardType="numeric"
+                  value={formData.price_range}
+                  onChangeText={(text) => handleInputChange('price_range', text)}
+                />
+              </View>
+
+              <View style={styles.formField}>
+                <Text style={styles.label}>Category</Text>
+                <Picker
+                  selectedValue={formData.category}
+                  onValueChange={(value) => handleInputChange('category', value)}
+                  style={styles.picker}
+                >
+                  {categories.map((category) => (
+                    <Picker.Item key={category} label={category} value={category} />
+                  ))}
+                </Picker>
+              </View>
+
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <Text style={styles.submitButtonText}>Submit Item</Text>
               </TouchableOpacity>
             </>
           )}
         </View>
 
-        {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 24 }} />}
+        {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />}
       </ScrollView>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  modalContent: {
+    padding: 24,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#ddd',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  imageText: {
+    color: '#888',
+    fontSize: 16,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  uploadButton: {
+    backgroundColor: '#007bff',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  formField: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 4,
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  descriptionInput: {
+    height: 80,
+  },
+  picker: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 6,
+    backgroundColor: '#fff',
+  },
+  submitButton: {
+    backgroundColor: '#28a745',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingIndicator: {
+    marginTop: 24,
+  },
+});
 
 export default Xeno;
