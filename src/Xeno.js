@@ -19,7 +19,22 @@ const Xeno = ({ visible, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
 
-  const categories = category;
+  const categories = [
+      "Outdoor Recreation",
+      "Home Appliances",
+      "Electronics",
+      "Home & Garden",
+      "Tools",
+      "Travel",
+      "Kitchen Appliances",
+      "Garden",
+      "Winter Equipment",
+      "Party Supplies",
+      "Transportation",
+      "Pet Supplies",
+      "Fitness",
+      "Health & Wellness"
+    ];
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
