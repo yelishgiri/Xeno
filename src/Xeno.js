@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker'; 
-import { category } from '@/constants/products';
+
 
 const Xeno = ({ visible, onClose }) => {
   const [formData, setFormData] = useState({
